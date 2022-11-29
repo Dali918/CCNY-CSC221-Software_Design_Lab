@@ -93,33 +93,42 @@ class Color(QWidget):
         self.setPalette(palette)
 
 class MainWindow(QMainWindow):
-    def __init__(self,matrix):
+    def __init__(self,name,matrix):
         self.matrix = matrix
         super(MainWindow,self).__init__()
         self.grid_layout = self.create_matrix(self.matrix)
         self.grid_layout.setContentsMargins(0,0,0,0)
-  
+        
+        self.grid_widget = QWidget()
+        self.grid_widget.setLayout(self.grid_layout)
         self.button = QPushButton("Solve!")
         self.button.clicked.connect(self.solve)
 
         self.main_layout = QVBoxLayout()
-        self.main_layout.addLayout(self.grid_layout)
+        self.main_layout.addWidget(self.grid_widget)
         self.main_layout.addWidget(self.button)
+        
 
         self.main_widget = QWidget()
         self.main_widget.setLayout(self.main_layout)
+        self.setWindowTitle(name)
+        self.setMinimumWidth(300)
+        self.setMinimumHeight(300)
         self.setCentralWidget(self.main_widget)
 
     def create_matrix(self,matrix):
         grid_layout = QGridLayout()
         grid_layout.setSpacing(2)
+        grid_layout.setSpacing(0)
 
         for i in range(len(matrix)):
             for j in range(len(matrix[0])):
 
                 widget = QLabel(matrix[i][j])
+                widget.setStyleSheet("background-color: rgb(255,255,255); color: #22295F; margin:0.5; font-weight: bold")
+                
                 font = widget.font()
-                font.setPointSize(15)
+                font.setPointSize(12)
                 widget.setFont(font)
                 widget.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
                 grid_layout.addWidget(widget, i, j)
@@ -143,7 +152,8 @@ def main():
     csv_file = sys.argv[1]
     matrix = read_csv(csv_file)
     app = QApplication(sys.argv)
-    window =MainWindow(matrix)
+    app_name= "CSC221-HW4"
+    window =MainWindow(app_name,matrix)
     window.show()
     app.exec()  
 
